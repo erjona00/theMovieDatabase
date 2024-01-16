@@ -47,21 +47,21 @@ function Movie() {
   }
 
   return (
-    <div>
+    <div style={{ backgroundColor: 'black' , color: 'white', fontFamily:'sans-serif', fontSize:'20px', textAlign:'center', textDecoration: 'bold'}}>
       <div>
         <input
-          type="text"
+          type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' }}
           placeholder="Search by title"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <input
-          type="text"
+          type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft:'20px'}}
           placeholder="Filter by year"
           value={searchYear}
           onChange={(e) => setSearchYear(e.target.value)}
         />
-        <button onClick={handleSearch}>Search</button>
+        <button onClick={handleSearch} style={{ backgroundColor: 'lightgrey', color: 'grey', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft:'20px'}}>Search</button>
       </div>
 
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -93,7 +93,7 @@ function Movie() {
             padding: '20px',
             borderRadius: '10px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            backgroundColor: '#ffd1dc',
+            backgroundColor: 'lightgrey',
             color: 'blue',
             textAlign: 'center',
           },
