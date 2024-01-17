@@ -98,22 +98,24 @@ function Movie() {
   }
 
   return (
-    <div style={{ backgroundColor: 'black', color: 'white', fontFamily: 'sans-serif', fontSize: '20px', textAlign: 'center', textDecoration: 'bold', minHeight: '422vh' }}>
-      <div>
-      <input
-  type="text" style={{ backgroundColor: 'lightgrey', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' }}
-  placeholder="Search by title"
-  value={searchQuery}
-  onChange={(e) => setSearchQuery(e.target.value)}
-/>
-<input
-  type="text" style={{ backgroundColor: 'lightgrey', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
-  placeholder="Filter by year"
-  value={searchYear}
-  onChange={(e) => setSearchYear(e.target.value)}
-/>
-<select
-          style={{ backgroundColor: 'lightgrey', color: 'grey', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
+    <div style={{ backgroundColor: 'black', color: 'white', fontFamily: 'sans-serif', fontSize: '20px', textAlign: 'center', textDecoration: 'bold', minHeight: '475vh', padding: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+        <input
+          type="text"
+          style={{ backgroundColor: 'lightgrey', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', margin: '10px' }}
+          placeholder="Search by title"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <input
+          type="text"
+          style={{ backgroundColor: 'lightgrey', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', margin: '10px' }}
+          placeholder="Filter by year"
+          value={searchYear}
+          onChange={(e) => setSearchYear(e.target.value)}
+        />
+        <select
+          style={{ backgroundColor: 'lightgrey', color: 'grey', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', margin: '10px' }}
           value={searchGenre}
           onChange={(e) => setSearchGenre(e.target.value)}
         >
@@ -122,16 +124,22 @@ function Movie() {
             <option key={genre.id} value={genre.id}>{genre.name}</option>
           ))}
         </select>
-<input
-  type="text" style={{ backgroundColor: 'lightgrey', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
-  placeholder="Filter by rating"
-  value={searchRating}
-  onChange={(e) => setSearchRating(e.target.value)}
-/>
-<button onClick={handleSearch} style={{ backgroundColor: 'lightblue', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}>Search</button>
-</div>
+        <input
+          type="text"
+          style={{ backgroundColor: 'lightgrey', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', margin: '10px' }}
+          placeholder="Filter by rating"
+          value={searchRating}
+          onChange={(e) => setSearchRating(e.target.value)}
+        />
+        <button
+          onClick={handleSearch}
+          style={{ backgroundColor: 'lightblue', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', margin: '10px' }}
+        >
+          Search
+        </button>
+      </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', minHeight: '70vh' }}>
         {notFoundMessage ? (
           <p style={{ fontSize: '30px', marginTop: '50px' }}>{notFoundMessage}</p>
         ) : (
@@ -158,8 +166,8 @@ function Movie() {
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
           },
           content: {
-            width: '60%',
-            height: '70%',
+            width: '90%',
+            maxWidth: '600px',
             margin: 'auto',
             padding: '20px',
             borderRadius: '10px',
@@ -189,7 +197,7 @@ function Movie() {
             <h3>Similar Movies</h3>
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
               {similarMovies.map((similarMovie) => (
-                <div key={similarMovie.id} style={{ margin: '10px', flexBasis: 'calc(25% - 20px)' }}>
+                <div key={similarMovie.id} style={{ margin: '10px', flexBasis: 'calc(50% - 20px)' }}>
                   <img
                     style={{ width: '100%', height: 'auto', cursor: 'pointer' }}
                     src={`https://image.tmdb.org/t/p/w500${similarMovie.poster_path}`}
