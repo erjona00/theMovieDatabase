@@ -5,6 +5,8 @@ function Movie() {
   const [movieList, setMovieList] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchYear, setSearchYear] = useState('');
+  const [searchGenre, setSearchGenre] = useState('');
+  const [searchRating, setSearchRating] = useState('');
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -34,6 +36,18 @@ function Movie() {
       );
     }
 
+    if (searchGenre) {
+      filteredMovies = filteredMovies.filter(movie =>
+        movie.genre_ids.includes(parseInt(searchGenre, 10))
+      );
+    }
+
+    if (searchRating) {
+      filteredMovies = filteredMovies.filter(movie =>
+        movie.vote_average >= parseFloat(searchRating)
+      );
+    }
+
     setMovieList(filteredMovies);
   }
 
@@ -47,7 +61,7 @@ function Movie() {
   }
 
   return (
-    <div style={{ backgroundColor: 'black' , color: 'white', fontFamily:'sans-serif', fontSize:'20px', textAlign:'center', textDecoration: 'bold'}}>
+    <div style={{ backgroundColor: 'black', color: 'white', fontFamily: 'sans-serif', fontSize: '20px', textAlign: 'center', textDecoration: 'bold' }}>
       <div>
         <input
           type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' }}
@@ -56,12 +70,24 @@ function Movie() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <input
-          type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft:'20px'}}
+          type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
           placeholder="Filter by year"
           value={searchYear}
           onChange={(e) => setSearchYear(e.target.value)}
         />
-        <button onClick={handleSearch} style={{ backgroundColor: 'lightgrey', color: 'grey', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft:'20px'}}>Search</button>
+        <input
+          type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
+          placeholder="Filter by genre"
+          value={searchGenre}
+          onChange={(e) => setSearchGenre(e.target.value)}
+        />
+        <input
+          type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
+          placeholder="Filter by rating"
+          value={searchRating}
+          onChange={(e) => setSearchRating(e.target.value)}
+        />
+        <button onClick={handleSearch} style={{ backgroundColor: 'lightgrey', color: 'grey', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}>Search</button>
       </div>
 
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -88,7 +114,7 @@ function Movie() {
           },
           content: {
             width: '30%',
-            height: '40%',
+            height: '45%',
             margin: 'auto',
             padding: '20px',
             borderRadius: '10px',
@@ -113,6 +139,8 @@ function Movie() {
             <h2>{selectedMovie.title}</h2>
             <p>{selectedMovie.overview}</p>
             <p>Release Year: {selectedMovie.release_date}</p>
+            <p>Genre: {selectedMovie.genre_ids.join(', ')}</p>
+            <p>Rating: {selectedMovie.vote_average}</p>
             {/* Add more details as needed */}
             <button onClick={closeModal} style={{ backgroundColor: 'blue', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' }}>
               Close
