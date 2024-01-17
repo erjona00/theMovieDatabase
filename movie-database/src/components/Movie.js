@@ -1,6 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 
+const genres = [
+  { id: 28, name: 'Action' },
+  { id: 12, name: 'Adventure' },
+  { id: 16, name: 'Animation' },
+  { id: 35, name: 'Comedy' },
+  { id: 80, name: 'Crime' },
+  { id: 99, name: 'Documentary' },
+  { id: 18, name: 'Drama' },
+  { id: 10751, name: 'Family' },
+  { id: 14, name: 'Fantasy' },
+  { id: 36, name: 'History' },
+  { id: 27, name: 'Horror' },
+  { id: 10402, name: 'Music' },
+  { id: 9648, name: 'Mystery' },
+  { id: 10749, name: 'Romance' },
+  { id: 878, name: 'Science Fiction' },
+  { id: 10770, name: 'TV Movie' },
+  { id: 53, name: 'Thriller' },
+  { id: 10752, name: 'War' },
+  { id: 37, name: 'Western' },
+];
+
 function Movie() {
   const [movieList, setMovieList] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -9,11 +31,13 @@ function Movie() {
   const [searchRating, setSearchRating] = useState('');
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [similarMovies, setSimilarMovies] = useState([]);
+  const [notFoundMessage, setNotFoundMessage] = useState('');
 
   const getMovie = () => {
-    fetch("https://api.themoviedb.org/3/discover/movie?api_key=418bfbe8f91c13d9fc809c3c99f5dc3c")
+    fetch("https://api.themoviedb.org/3/discover/movie?api_key=418bfbe8f91c13d9fc809c3c99f5dc3c&sort_by=popularity.desc&language=en-US&page=1&vote_count.gte=1000")
       .then(res => res.json())
-      .then(json => setMovieList(json.results))
+      .then(json => setMovieList(json.results.slice(0, 50)))
       .catch(error => console.error('Error fetching movies:', error));
   }
 
@@ -48,60 +72,81 @@ function Movie() {
       );
     }
 
+    if (filteredMovies.length === 0) {
+      setNotFoundMessage('No movies found.');
+    } else {
+      setNotFoundMessage('');
+    }
+
     setMovieList(filteredMovies);
   }
 
-  const openModal = (movie) => {
+  const openModal = async (movie) => {
     setSelectedMovie(movie);
+
+    // Fetch similar movies
+    const similarMoviesResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}/similar?api_key=418bfbe8f91c13d9fc809c3c99f5dc3c&language=en-US&page=1`);
+    const similarMoviesJson = await similarMoviesResponse.json();
+    setSimilarMovies(similarMoviesJson.results);
+
     setModalIsOpen(true);
   }
 
   const closeModal = () => {
     setModalIsOpen(false);
+    setSimilarMovies([]);
   }
 
   return (
-    <div style={{ backgroundColor: 'black', color: 'white', fontFamily: 'sans-serif', fontSize: '20px', textAlign: 'center', textDecoration: 'bold' }}>
+    <div style={{ backgroundColor: 'black', color: 'white', fontFamily: 'sans-serif', fontSize: '20px', textAlign: 'center', textDecoration: 'bold', minHeight: '422vh' }}>
       <div>
-        <input
-          type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' }}
-          placeholder="Search by title"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <input
-          type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
-          placeholder="Filter by year"
-          value={searchYear}
-          onChange={(e) => setSearchYear(e.target.value)}
-        />
-        <input
-          type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
-          placeholder="Filter by genre"
+      <input
+  type="text" style={{ backgroundColor: 'lightgrey', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' }}
+  placeholder="Search by title"
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+/>
+<input
+  type="text" style={{ backgroundColor: 'lightgrey', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
+  placeholder="Filter by year"
+  value={searchYear}
+  onChange={(e) => setSearchYear(e.target.value)}
+/>
+<select
+          style={{ backgroundColor: 'lightgrey', color: 'grey', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
           value={searchGenre}
           onChange={(e) => setSearchGenre(e.target.value)}
-        />
-        <input
-          type="text" style={{ backgroundColor: 'lightgrey', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
-          placeholder="Filter by rating"
-          value={searchRating}
-          onChange={(e) => setSearchRating(e.target.value)}
-        />
-        <button onClick={handleSearch} style={{ backgroundColor: 'lightgrey', color: 'grey', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}>Search</button>
-      </div>
+        >
+          <option value="">Select Genre</option>
+          {genres.map((genre) => (
+            <option key={genre.id} value={genre.id}>{genre.name}</option>
+          ))}
+        </select>
+<input
+  type="text" style={{ backgroundColor: 'lightgrey', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}
+  placeholder="Filter by rating"
+  value={searchRating}
+  onChange={(e) => setSearchRating(e.target.value)}
+/>
+<button onClick={handleSearch} style={{ backgroundColor: 'lightblue', color: 'black', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px', marginLeft: '20px' }}>Search</button>
+</div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {movieList.map((movie) => (
-          <div key={movie.id} style={{ margin: '10px', flexBasis: 'calc(25% - 20px)' }}>
-            <img
-              style={{ width: '100%', height: 'auto', cursor: 'pointer' }}
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
-              onClick={() => openModal(movie)}
-            />
-            <p>{movie.title}</p>
-          </div>
-        ))}
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+        {notFoundMessage ? (
+          <p style={{ fontSize: '30px', marginTop: '50px' }}>{notFoundMessage}</p>
+        ) : (
+          movieList.map((movie) => (
+            <div key={movie.id} style={{ margin: '10px', flexBasis: 'calc(25% - 20px)' }}>
+              <img
+                style={{ width: '100%', height: 'auto', cursor: 'pointer' }}
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+                onClick={() => openModal(movie)}
+              />
+              <p>{movie.title}</p>
+            </div>
+          ))
+        )}
       </div>
 
       <Modal
@@ -113,8 +158,8 @@ function Movie() {
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
           },
           content: {
-            width: '30%',
-            height: '45%',
+            width: '60%',
+            height: '70%',
             margin: 'auto',
             padding: '20px',
             borderRadius: '10px',
@@ -141,7 +186,20 @@ function Movie() {
             <p>Release Year: {selectedMovie.release_date}</p>
             <p>Genre: {selectedMovie.genre_ids.join(', ')}</p>
             <p>Rating: {selectedMovie.vote_average}</p>
-            {/* Add more details as needed */}
+            <h3>Similar Movies</h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+              {similarMovies.map((similarMovie) => (
+                <div key={similarMovie.id} style={{ margin: '10px', flexBasis: 'calc(25% - 20px)' }}>
+                  <img
+                    style={{ width: '100%', height: 'auto', cursor: 'pointer' }}
+                    src={`https://image.tmdb.org/t/p/w500${similarMovie.poster_path}`}
+                    alt={similarMovie.title}
+                    onClick={() => openModal(similarMovie)}
+                  />
+                  <p>{similarMovie.title}</p>
+                </div>
+              ))}
+            </div>
             <button onClick={closeModal} style={{ backgroundColor: 'blue', color: '#fff', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginTop: '20px' }}>
               Close
             </button>
